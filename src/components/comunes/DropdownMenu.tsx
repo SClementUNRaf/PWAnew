@@ -13,9 +13,15 @@ export default function DropdownMenu({ userData }: { userData: UserData | null }
   const router = useRouter();
 
   const toggleMenu = () => setIsOpen(!isOpen);
-  const handleSelect = (route: string) => {
+
+  const navegarInterno = (ruta: string) => {
     setIsOpen(false);
-    router.push(route);
+    router.push(ruta);
+  };
+
+  const navegarExterno = (url: string) => {
+    setIsOpen(false);
+    router.push(`/ver-limpio?url=${encodeURIComponent(url)}`);
   };
 
   const handleLogout = () => {
@@ -25,9 +31,12 @@ export default function DropdownMenu({ userData }: { userData: UserData | null }
 
   return (
     <div className="fixed bottom-4 left-4 z-50">
-      {/* Contenedor con fondo vidrio y bordes redondeados */}
-      <div className="flex flex-col items-center gap-3 px-3 py-4 rounded-3xl backdrop-blur-md bg-white/30 shadow-lg">
-        {/* Botón molino que activa el menú */}
+      <div
+        className={`flex flex-col items-center rounded-full backdrop-blur-md bg-white/30 shadow-xl border border-white/50 overflow-hidden transition-all duration-500 ${
+          isOpen ? "max-h-[700px] px-3 py-4 gap-3 w-[72px]" : "max-h-[56px] w-14 h-14"
+        }`}
+      >
+        {/* Botón molino (siempre visible) */}
         <button
           onClick={toggleMenu}
           className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-105 transition"
@@ -35,41 +44,59 @@ export default function DropdownMenu({ userData }: { userData: UserData | null }
           <Image src="/icons/molino.png" alt="Logo" width={48} height={48} />
         </button>
 
-        {/* Menú desplegable */}
-        {isOpen && (
-          <div className="flex flex-col items-center gap-3">
-            {/* Público */}
-            <button onClick={() => handleSelect("/")} className="menu-btn">
-              <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
-            </button>
-            <button onClick={() => handleSelect("/suenio")} className="menu-btn">
-              <Image src="/icons/sueno.png" width={28} height={28} alt="Sueño" />
-            </button>
-            <button onClick={() => handleSelect("/noticias")} className="menu-btn">
-              <Image src="/icons/noticias.png" width={28} height={28} alt="Noticias" />
-            </button>
-            <button onClick={() => handleSelect("/agenda")} className="menu-btn">
-              <Image src="/icons/agenda.png" width={28} height={28} alt="Agenda" />
-            </button>
+        {/* Menú interno con fade y slide */}
+        <div
+          className={`flex flex-col items-center transition-opacity duration-500 ${
+            isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {isOpen && (
+            <>
+              <button onClick={() => navegarInterno("/")} className="menu-btn">
+                <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
+              </button>
+              <button
+                onClick={() =>
+                  navegarExterno("https://www.unraf.edu.ar/index.php/menucontenidos/855-noticia-376")
+                }
+                className="menu-btn"
+              >
+                <Image src="/icons/sueno.png" width={28} height={28} alt="Sueño" />
+              </button>
+              <button
+                onClick={() => navegarExterno("https://www.unraf.edu.ar/noticias")}
+                className="menu-btn"
+              >
+                <Image src="/icons/noticias.png" width={28} height={28} alt="Noticias" />
+              </button>
+              <button
+                onClick={() => navegarExterno("https://www.unraf.edu.ar/cursos-diplomaturas")}
+                className="menu-btn"
+              >
+                <Image src="/icons/agenda.png" width={28} height={28} alt="Agenda" />
+              </button>
 
-            {/* Privado */}
-            {userData && (
-              <>
-                {(userData.cargo === "ALUMNO" || userData.cargo === "DOCENTE" || userData.cargo === "NO DOCENTE" || userData.cargo === "SUPERIOR") && (
-                  <button onClick={() => handleSelect("/credencial")} className="menu-btn">
-                    <Image src="/icons/badge.svg" width={28} height={28} alt="Credencial" />
+              {userData && (
+                <>
+                  {(userData.cargo === "ALUMNO" ||
+                    userData.cargo === "DOCENTE" ||
+                    userData.cargo === "NO DOCENTE" ||
+                    userData.cargo === "SUPERIOR") && (
+                    <button onClick={() => navegarInterno("/credencial")} className="menu-btn">
+                      <Image src="/icons/badge.svg" width={28} height={28} alt="Credencial" />
+                    </button>
+                  )}
+                  <button onClick={() => navegarInterno("/perfil")} className="menu-btn">
+                    <Image src="/icons/usuario.png" width={28} height={28} alt="Perfil" />
                   </button>
-                )}
-                <button onClick={() => handleSelect("/perfil")} className="menu-btn">
-                  <Image src="/icons/usuario.png" width={28} height={28} alt="Perfil" />
-                </button>
-                <button onClick={handleLogout} className="menu-btn">
-                  <Image src="/icons/salida.png" width={28} height={28} alt="Salir" />
-                </button>
-              </>
-            )}
-          </div>
-        )}
+                  <button onClick={handleLogout} className="menu-btn">
+                    <Image src="/icons/salida.png" width={28} height={28} alt="Salir" />
+                  </button>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       <style jsx>{`

@@ -67,12 +67,16 @@ export default function Bienvenida() {
 
         {/* Botón de login con estilo Google */}
         <button
-          onClick={login}
-          className="mt-10 w-full max-w-xs flex items-center justify-center gap-2 bg-white text-black font-medium py-2 px-4 rounded-full shadow hover:bg-gray-100 transition border"
-        >
-          <img src="/google-logo.svg" alt="Google" className="w-5 h-5" />
-          Ingresar con Google
-        </button>
+  onClick={login}
+  className="mt-10 w-full max-w-xs flex items-center justify-center gap-2 
+             bg-white/70 text-black font-medium py-2 px-4 rounded-full 
+             shadow-lg backdrop-blur-sm ring-1 ring-white/40 hover:scale-105 
+             hover:bg-white/80 transition"
+>
+  <img src="/google-logo.svg" alt="Google" className="w-5 h-5" />
+  Ingresar con Google
+</button>
+
       </div>
 
       {/* Footer */}
