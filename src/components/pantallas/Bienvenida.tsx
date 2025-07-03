@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Newspaper, Calendar, Rocket } from "lucide-react";
 
@@ -11,8 +12,53 @@ export default function Bienvenida() {
   };
 
   const login = () => {
-    router.push("/login");
+    // Esto ahora no es necesario, pero podés usarlo si querés invocar manualmente el login
+    console.log("Login manual (no usado ahora)");
   };
+
+  function handleCredentialResponse(response: any) {
+    const idToken = response.credential;
+    console.log("🧩 ID Token recibido:", idToken);
+
+    fetch("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ token: idToken }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      router.push("/test-login");
+    });
+  }
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      // @ts-ignore
+      google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+
+      // @ts-ignore
+      google.accounts.id.renderButton(
+        document.getElementById("google-button"),
+        {
+          theme: "outline",
+          size: "large",
+          type: "standard",
+          width: 240,
+        }
+      );
+    };
+  }, []);
+
+  
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-900 text-white overflow-hidden">
@@ -65,18 +111,11 @@ export default function Bienvenida() {
           </div>
         </div>
 
-        {/* Botón de login con estilo Google */}
-        <button
-  onClick={login}
-  className="mt-10 w-full max-w-xs flex items-center justify-center gap-2 
-             bg-white/70 text-black font-medium py-2 px-4 rounded-full 
-             shadow-lg backdrop-blur-sm ring-1 ring-white/40 hover:scale-105 
-             hover:bg-white/80 transition"
->
-  <img src="/google-logo.svg" alt="Google" className="w-5 h-5" />
-  Ingresar con Google
-</button>
-
+        {/* Botón de login con Google */}
+        <div
+          id="google-button"
+          className="mt-10 w-full max-w-xs flex justify-center"
+        ></div>
       </div>
 
       {/* Footer */}

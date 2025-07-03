@@ -1,42 +1,34 @@
-"use client";
-import { useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+"use client"
+import { useState } from "react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useUser } from "@/context/UserContext"
 
-interface UserData {
-  nombre: string;
-  cargo: string;
-}
+export default function DropdownMenu() {
+  const [isOpen, setIsOpen] = useState(false)
+  const userData = useUser()
+  const router = useRouter()
 
-export default function DropdownMenu({ userData }: { userData: UserData | null }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
+  const toggleMenu = () => setIsOpen(!isOpen)
   const navegarInterno = (ruta: string) => {
-    setIsOpen(false);
-    router.push(ruta);
-  };
-
+    setIsOpen(false)
+    router.push(ruta)
+  }
   const navegarExterno = (url: string) => {
-    setIsOpen(false);
-    router.push(`/ver-limpio?url=${encodeURIComponent(url)}`);
-  };
+    setIsOpen(false)
+    router.push(`/ver-limpio?url=${encodeURIComponent(url)}`)
+  }
 
-  const handleLogout = () => {
-    localStorage.removeItem("userData");
-    location.href = "/";
-  };
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    location.href = "/"
+  }
+
+  const esEstudiante = userData?.cargo === "ALUMNO"
 
   return (
     <div className="fixed bottom-4 left-4 z-50">
-      <div
-        className={`flex flex-col items-center rounded-full backdrop-blur-md bg-white/30 shadow-xl border border-white/50 overflow-hidden transition-all duration-500 ${
-          isOpen ? "max-h-[700px] px-3 py-4 gap-3 w-[72px]" : "max-h-[56px] w-14 h-14"
-        }`}
-      >
-        {/* Botón molino (siempre visible) */}
+      <div className={`flex flex-col items-center rounded-full backdrop-blur-md bg-white/30 shadow-xl border border-white/50 overflow-hidden transition-all duration-500 ${isOpen ? "max-h-[700px] px-3 py-4 gap-3 w-[72px]" : "max-h-[56px] w-14 h-14"}`}>
         <button
           onClick={toggleMenu}
           className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-105 transition"
@@ -44,53 +36,45 @@ export default function DropdownMenu({ userData }: { userData: UserData | null }
           <Image src="/icons/molino.png" alt="Logo" width={48} height={48} />
         </button>
 
-        {/* Menú interno con fade y slide */}
-        <div
-          className={`flex flex-col items-center transition-opacity duration-500 ${
-            isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
+        <div className={`flex flex-col items-center transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           {isOpen && (
             <>
-              <button onClick={() => navegarInterno("/")} className="menu-btn">
-                <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
-              </button>
-              <button
-                onClick={() =>
-                  navegarExterno("https://www.unraf.edu.ar/index.php/menucontenidos/855-noticia-376")
-                }
-                className="menu-btn"
-              >
-                <Image src="/icons/sueno.png" width={28} height={28} alt="Sueño" />
-              </button>
-              <button
-                onClick={() => navegarExterno("https://www.unraf.edu.ar/noticias")}
-                className="menu-btn"
-              >
-                <Image src="/icons/noticias.png" width={28} height={28} alt="Noticias" />
-              </button>
-              <button
-                onClick={() => navegarExterno("https://www.unraf.edu.ar/cursos-diplomaturas")}
-                className="menu-btn"
-              >
-                <Image src="/icons/agenda.png" width={28} height={28} alt="Agenda" />
-              </button>
-
-              {userData && (
+              {/* Íconos exclusivos para estudiantes */}
+              {esEstudiante ? (
                 <>
-                  {(userData.cargo === "ALUMNO" ||
-                    userData.cargo === "DOCENTE" ||
-                    userData.cargo === "NO DOCENTE" ||
-                    userData.cargo === "SUPERIOR") && (
-                    <button onClick={() => navegarInterno("/credencial")} className="menu-btn">
-                      <Image src="/icons/badge.svg" width={28} height={28} alt="Credencial" />
-                    </button>
-                  )}
-                  <button onClick={() => navegarInterno("/perfil")} className="menu-btn">
-                    <Image src="/icons/usuario.png" width={28} height={28} alt="Perfil" />
+                  <button onClick={() => navegarInterno("/")} className="menu-btn" title="Inicio">
+                    <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
                   </button>
-                  <button onClick={handleLogout} className="menu-btn">
+                  <button onClick={() => navegarExterno("https://guarani.unraf.edu.ar")} className="menu-btn" title="SIU Guaraní">
+                    <Image src="/icons/guarani.png" width={28} height={28} alt="SIU Guaraní" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://tutienda.unraf.edu.ar")} className="menu-btn" title="TuTiendaUNRaf">
+                    <Image src="/icons/tutienda.png" width={28} height={28} alt="TuTiendaUNRaf" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/calendario")} className="menu-btn" title="Calendario Académico">
+                    <Image src="/icons/calendario.png" width={28} height={28} alt="Calendario" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/bienestar/beneficios")} className="menu-btn" title="Beneficios">
+                    <Image src="/icons/beneficios.png" width={28} height={28} alt="Beneficios" />
+                  </button>
+                  <button onClick={handleLogout} className="menu-btn" title="Cerrar sesión">
                     <Image src="/icons/salida.png" width={28} height={28} alt="Salir" />
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Accesos públicos si no está logueado */}
+                  <button onClick={() => navegarInterno("/")} className="menu-btn" title="Inicio">
+                    <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/index.php/menucontenidos/855-noticia-376")} className="menu-btn">
+                    <Image src="/icons/sueno.png" width={28} height={28} alt="Sueño" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/noticias")} className="menu-btn">
+                    <Image src="/icons/noticias.png" width={28} height={28} alt="Noticias" />
+                  </button>
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/cursos-diplomaturas")} className="menu-btn">
+                    <Image src="/icons/agenda.png" width={28} height={28} alt="Agenda" />
                   </button>
                 </>
               )}
@@ -113,5 +97,5 @@ export default function DropdownMenu({ userData }: { userData: UserData | null }
         }
       `}</style>
     </div>
-  );
+  )
 }

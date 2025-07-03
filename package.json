@@ -9,11 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@capacitor/cli": "^7.4.0",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/device": "^7.0.1",
     "axios": "^1.10.0",
+    "capacitor-fingerprint-auth": "^0.0.2",
     "cheerio": "^1.1.0",
+    "cordova-plugin-fingerprint-aio": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "google-auth-library": "^10.1.0",
     "html-react-parser": "^5.2.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.523.0",
     "next": "15.3.4",
     "react": "^19.0.0",
@@ -23,6 +30,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
