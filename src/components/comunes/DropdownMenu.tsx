@@ -23,8 +23,15 @@ export default function DropdownMenu() {
     await fetch('/api/auth/logout', { method: 'POST' })
     location.href = "/"
   }
+  const abrirEmbed = (url: string) => {
+  setIsOpen(false)
+  router.push(`/embed?url=${encodeURIComponent(url)}`)
+}
+
 
   const esEstudiante = userData?.cargo === "ALUMNO"
+
+  
 
   return (
     <div className="fixed bottom-4 left-4 z-50">
@@ -45,16 +52,16 @@ export default function DropdownMenu() {
                   <button onClick={() => navegarInterno("/")} className="menu-btn" title="Inicio">
                     <Image src="/icons/home.png" width={28} height={28} alt="Inicio" />
                   </button>
-                  <button onClick={() => navegarExterno("https://guarani.unraf.edu.ar")} className="menu-btn" title="SIU Guaraní">
+                  <button onClick={() => abrirEmbed("https://guarani.unraf.edu.ar")} className="menu-btn" title="SIU Guaraní">
                     <Image src="/icons/guarani.png" width={28} height={28} alt="SIU Guaraní" />
                   </button>
-                  <button onClick={() => navegarExterno("https://tutienda.unraf.edu.ar")} className="menu-btn" title="TuTiendaUNRaf">
+                  <button onClick={() => abrirEmbed("https://tutienda.unraf.edu.ar/index.php")} className="menu-btn" title="TuTiendaUNRaf">
                     <Image src="/icons/tutienda.png" width={28} height={28} alt="TuTiendaUNRaf" />
                   </button>
-                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/calendario")} className="menu-btn" title="Calendario Académico">
+                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/cursos-diplomaturas-2/3541-noti3423")} className="menu-btn" title="Calendario Académico">
                     <Image src="/icons/calendario.png" width={28} height={28} alt="Calendario" />
                   </button>
-                  <button onClick={() => navegarExterno("https://www.unraf.edu.ar/bienestar/beneficios")} className="menu-btn" title="Beneficios">
+                  <button onClick={() => abrirEmbed("https://www.unraf.edu.ar/bienestar/beneficios")} className="menu-btn" title="Beneficios">
                     <Image src="/icons/beneficios.png" width={28} height={28} alt="Beneficios" />
                   </button>
                   <button onClick={handleLogout} className="menu-btn" title="Cerrar sesión">
